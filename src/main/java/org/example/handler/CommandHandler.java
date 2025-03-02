@@ -11,7 +11,6 @@ import org.example.handler.commands.Handler;
 import org.example.handler.commands.LoginHandler;
 import org.example.handler.commands.ViewHandler;
 import org.example.handler.commands.VoteHandler;
-import org.example.listener.ConsoleCommandListener;
 import org.example.model.ParsedCommand;
 import org.example.repository.DataRepository;
 
@@ -22,9 +21,8 @@ public class CommandHandler {
     private final Map<EventCommand, Handler> handlers = new HashMap<>();
     private final DataRepository dataRepository;
 
-    public CommandHandler() {
-        this.dataRepository = new DataRepository();
-        startConsoleProcessor();
+    public CommandHandler(DataRepository dataRepository) {
+        this.dataRepository = dataRepository;
         handlers.put(EventCommand.LOGIN, new LoginHandler(dataRepository));
         handlers.put(EventCommand.CREATE_TOPIC, new CreateTopicHandler(dataRepository));
         handlers.put(EventCommand.VIEW, new ViewHandler(dataRepository));
@@ -67,10 +65,5 @@ public class CommandHandler {
         if (!dataRepository.getSessions().containsKey(ctx.channel().id())) {
             throw new UnauthorizedException("You are not authorized!");
         }
-    }
-
-    private void startConsoleProcessor() {
-        Thread consoleListenerThread = new Thread(new ConsoleCommandListener(dataRepository));
-        consoleListenerThread.start();
     }
 }

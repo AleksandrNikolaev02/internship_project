@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.enums.EventCommand;
 import org.example.model.ParsedCommand;
 import org.example.parser.CommandParser;
+import org.example.repository.DataRepository;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -15,7 +16,11 @@ import java.util.Map;
 @Slf4j
 public class ServerHandler extends ChannelInboundHandlerAdapter {
     private final CommandParser commandParser = new CommandParser();
-    private final CommandHandler commandHandler = new CommandHandler();
+    private final CommandHandler commandHandler;
+
+    public ServerHandler(DataRepository dataRepository) {
+        commandHandler = new CommandHandler(dataRepository);
+    }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {

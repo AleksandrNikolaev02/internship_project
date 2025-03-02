@@ -8,8 +8,6 @@ import org.example.model.Topic;
 import org.example.model.Vote;
 import org.example.model.VoteUserSession;
 import org.example.repository.DataRepository;
-import org.example.validotor.TopicExistValidator;
-import org.example.validotor.VoteNameValidator;
 
 import java.util.Map;
 
@@ -21,14 +19,12 @@ public class VoteHandler implements Handler {
         if (command.params().containsKey("t") && command.params().containsKey("v")) {
             String topicName = command.getParam("t");
             String voteName = command.getParam("v");
-            TopicExistValidator.checkTopicExist(topicName, dataRepository.getTopics());
-            if (!VoteNameValidator.checkVoteNameExists(topicName, voteName, dataRepository.getTopics())) {
-                return String.format("Vote with name '%s' not exists!", voteName);
-            }
 
             Vote vote = dataRepository.findVoteByNameAndTopic(topicName, voteName)
-                    .orElseThrow(() -> new NotFoundException(String.format("Vote with name %s and topic name %s not found!",
-                            voteName, topicName)));
+                    .orElseThrow(() -> new NotFoundException(
+                            String.format("Vote with name %s or topic with name %s not found!",
+                            voteName, topicName)
+                    ));
 
             StringBuilder response = new StringBuilder();
             int counter = 1;

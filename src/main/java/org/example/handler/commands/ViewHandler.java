@@ -2,6 +2,7 @@ package org.example.handler.commands;
 
 import io.netty.channel.ChannelHandlerContext;
 import lombok.AllArgsConstructor;
+import org.example.exceptions.NotFoundException;
 import org.example.model.ParsedCommand;
 import org.example.model.Topic;
 import org.example.model.Vote;
@@ -40,19 +41,15 @@ public class ViewHandler implements Handler {
 
     private String findTopicByNameAndNameVote(String topicName, String voteName) {
         StringBuilder response = new StringBuilder("INFO:\n");
-        for (Topic topic : dataRepository.getTopics()) {
-            if (topic.getName().equals(topicName)) {
-                for (Vote vote : topic.getVotes()) {
-                    if (vote.getName().equals(voteName)) {
-                        response.append("Name topic: ").append(topicName).append("\n");
 
-                        response.append("Variants:\n");
-                        for (Map.Entry<String, Integer> entry : vote.getAnswers().entrySet()) {
-                            response.append(entry.getKey()).append(" : ").append(entry.getValue()).append(" ");
-                        }
-                    }
-                }
-            }
+        Vote vote = dataRepository.findVoteByNameAndTopic(topicName, voteName)
+                .orElseThrow(() -> new NotFoundException(String.format("Vote with name %s not found!", voteName)));
+
+        response.append("Name topic: ").append(topicName).append("\n");
+
+        response.append("Variants:\n");
+        for (Map.Entry<String, Integer> entry : vote.getAnswers().entrySet()) {
+            response.append(entry.getKey()).append(" : ").append(entry.getValue()).append(" ");
         }
 
         return response.toString();

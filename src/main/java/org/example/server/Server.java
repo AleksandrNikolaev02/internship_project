@@ -6,8 +6,12 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import lombok.extern.slf4j.Slf4j;
 import org.example.initializer.ServerInitializer;
+import org.example.listener.ConsoleCommandListener;
+import org.example.repository.DataRepository;
 
+@Slf4j
 public class Server {
     private final Integer port;
 
@@ -23,17 +27,21 @@ public class Server {
     public void run() throws Exception {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
+        DataRepository dataRepository = new DataRepository();
+
+        Thread thread = new Thread(new ConsoleCommandListener(dataRepository));
+        thread.start();
 
         try {
             ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
-                    .childHandler(new ServerInitializer())
+                    .childHandler(new ServerInitializer(dataRepository))
                     .option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
 
             ChannelFuture future = bootstrap.bind(port).sync();
-            System.out.println("Server started on port " + port);
+            log.info("Server started on port {}", port);
 
             future.channel().closeFuture().sync();
         } finally {

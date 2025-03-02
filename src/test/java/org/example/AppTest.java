@@ -8,12 +8,13 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.example.handler.ServerHandler;
+import org.example.repository.DataRepository;
 
 public class AppTest extends TestCase {
     private final String username = "alex";
     private final String testTopicName = "test";
     private final String testVoteName = "test_vote";
-    private final EmbeddedChannel embeddedChannel = new EmbeddedChannel(new ServerHandler());
+    private final EmbeddedChannel embeddedChannel = new EmbeddedChannel(new ServerHandler(new DataRepository()));
 
     public AppTest(String testName) {
         super(testName);
@@ -149,7 +150,7 @@ public class AppTest extends TestCase {
         sendRequestToServer(String.format("delete -t=%s -v=%s", testTopicName, testVoteName));
         String response = getResponseFromServer();
 
-        assertEquals("Topic has been deleted!", response);
+        assertEquals("Vote has been deleted!", response);
     }
 
     public void testDeleteVoteWithoutParameter() {

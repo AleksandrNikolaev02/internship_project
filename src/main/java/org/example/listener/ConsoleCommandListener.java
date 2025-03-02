@@ -6,7 +6,6 @@ import org.example.repository.DataRepository;
 import org.example.util.FileStorage;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 
 @Slf4j
@@ -26,7 +25,7 @@ public class ConsoleCommandListener implements Runnable {
             try {
                 String command = reader.readLine();
                 if (command.equalsIgnoreCase("exit")) {
-                    System.out.println("Gracefully shutdown server...");
+                    log.info("Gracefully shutdown server...");
                     System.exit(0);
                     break;
                 } else if (command.startsWith("save ")) {
@@ -38,9 +37,9 @@ public class ConsoleCommandListener implements Runnable {
                     dataRepository.getTopics().clear();
                     dataRepository.getTopics().addAll(topics.getTopicList());
                 } else {
-                    System.out.println("Unknown command.");
+                    log.error("Unknown command!");
                 }
-            } catch (IOException exception) {
+            } catch (Exception exception) {
                 log.error(exception.getMessage());
             }
 

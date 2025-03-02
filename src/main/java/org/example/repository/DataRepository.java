@@ -53,4 +53,12 @@ public class DataRepository {
 
         return Optional.empty();
     }
+
+    public Optional<Topic> findTopicByName(String name) {
+        for (Topic topic : topics) {
+            if (topic.getName().equals(name)) return Optional.of(topic);
+        }
+
+        return Optional.empty();
+    }
 }
