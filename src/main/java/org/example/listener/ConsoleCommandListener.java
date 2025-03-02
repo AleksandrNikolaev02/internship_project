@@ -1,8 +1,8 @@
 package org.example.listener;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.handler.CommandHandler;
 import org.example.model.TopicList;
+import org.example.repository.DataRepository;
 import org.example.util.FileStorage;
 
 import java.io.BufferedReader;
@@ -12,6 +12,11 @@ import java.io.InputStreamReader;
 @Slf4j
 public class ConsoleCommandListener implements Runnable {
     private final FileStorage<TopicList> topicsList = new FileStorage<>(TopicList.class);
+    private final DataRepository dataRepository;
+
+    public ConsoleCommandListener(DataRepository dataRepository) {
+        this.dataRepository = dataRepository;
+    }
 
     @Override
     public void run() {
@@ -26,11 +31,12 @@ public class ConsoleCommandListener implements Runnable {
                     break;
                 } else if (command.startsWith("save ")) {
                     String filename = command.substring(5);
-                    topicsList.save(filename, new TopicList(CommandHandler.topics));
+                    topicsList.save(filename, new TopicList(dataRepository.getTopics()));
                 } else if (command.startsWith("load ")) {
                     String filename = command.substring(5);
                     var topics = topicsList.load(filename);
-                    CommandHandler.topics = topics.getTopicList();
+                    dataRepository.getTopics().clear();
+                    dataRepository.getTopics().addAll(topics.getTopicList());
                 } else {
                     System.out.println("Unknown command.");
                 }

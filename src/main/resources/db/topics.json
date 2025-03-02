@@ -1,1 +1,1 @@
-{"topicList":[{"name":"test","votes":[{"topicName":"test","name":"my_vote","description":"Best vote!","answers":{"option_1":0,"option_2":1,"option_3":0},"answersCount":3,"author":"alex"}]}]}
+{"topicList":[{"name":"test","votes":[{"topicName":"test","name":"test_vote","description":"Test description!","answers":{"Option_1":0,"Option_2":0},"answersCount":2,"author":"alex"}]}]}

@@ -7,7 +7,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.example.initializer.ServerInitializer;
-import org.example.listener.ConsoleCommandListener;
 
 public class Server {
     private final Integer port;
@@ -22,9 +21,6 @@ public class Server {
     }
 
     public void run() throws Exception {
-        Thread consoleListenerThread = new Thread(new ConsoleCommandListener());
-        consoleListenerThread.start();
-
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
 
